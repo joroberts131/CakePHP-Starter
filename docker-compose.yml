@@ -1,0 +1,30 @@
+version: '3'
+services:
+  app:
+    image: shinsenter/cakephp4:latest
+    env_file:
+      - .env
+    volumes:
+      - ./app:/var/www/html
+    environment:
+      TZ: UTC
+      PUID: ${UID:-9999}
+      PGID: ${GID:-9999}
+    ports:
+      - "${WEB_APP_EXTERNAL_PORT}:80"
+    links:
+      - db
+
+  ## OTHER CONTAINERS SUCH AS REDIS OR DATABASE ###################################
+  db:
+    image: mariadb:latest
+    env_file:
+      - .env
+    environment:
+      TZ: UTC
+    volumes:
+      - "data:/var/lib/mysql"
+    ports:
+      - "${DATABASE_EXTERNAL_PORT}:3306"
+volumes:
+  data:
